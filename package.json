@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "google-assistant": "^0.1.13",
+    "node-record-lpcm16": "^0.3.0",
+    "shelljs": "^0.7.8",
+    "speaker": "^0.4.0"
+  }
+}
