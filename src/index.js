@@ -1,49 +1,15 @@
-const shell = require('shelljs')
-const record = require('node-record-lpcm16');
-const Speaker = require('speaker');
-const GoogleAssistant = require('google-assistant');
+import {
+  execOnMatch,
+  config,
+  speaker,
+  youtubeVideo,
+  googleSearch
+} from "./utils"
+import shell from "shelljs"
+import record from 'node-record-lpcm16'
+import GoogleAssistant from 'google-assistant'
 
-const execOnMatch = (sentence, expressions, callback) => {
-  let occurences = false
-  expressions.map( expression => {
-    occurences += sentence.includes(expression) ? 1 : 0
-  })
-
-  if( occurences )
-    callback()
-}
-
-const audioFromText = (url, callback) => {
-  console.log(url)
-
-  fetch(url)
-    .then(response => response.arrayBuffer())
-    .then(buffer => {
-      callback(buffer)
-    });
-}
-
-const config = {
-  auth: {
-    keyFilePath: __dirname+'/google-dependencies/secret.json',
-    savedTokensPath: __dirname+'/google-dependencies/tokens.js',
-  },
-  audio: {
-    encodingIn: 'LINEAR16', // supported are LINEAR16 / FLAC (defaults to LINEAR16)
-    sampleRateOut: 24000, // supported are 16000 / 24000 (defaults to 24000)
-  },
-};
-
-const speaker = new Speaker({
-  channels: 1,
-  sampleRate: config.audio.sampleRateOut,
-});
-
-const googleSearch = search => {
-  const url = "google.com/search?q="+encodeURIComponent(search)
-  shell.exec(`chromium ${url}`)
-}
-
+const myName = "https://www.youtube.com/watch?v=AfIOBLr1NDU"
 const startConversation = (conversation) => {
   console.log('Say something!');
 
@@ -68,7 +34,8 @@ const startConversation = (conversation) => {
     // just to spit out to the console what was said
     .on('transcription', text => {
       let searchTerm = text.split(" ").slice(-1)
-      execOnMatch(text, ["open", "chrome", "find", "get", "google", "search", "some", "give", "need", "i"], () => googleSearch(searchTerm))
+      execOnMatch(text,["what","what's","my","name","is"], () => youtubeVideo(myName))
+      //execOnMatch(text, ["open", "chrome", "find", "get", "google", "search", "some", "give", "need", "i"], () => googleSearch(searchTerm))
       console.log('ME:', text)
     })
     // once the conversation is ended, see if we need to follow up
